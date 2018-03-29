@@ -1,0 +1,14 @@
+{:css-dirs ["resources/public/css"]
+ :http-server-root "public" ;; default
+ :server-port 3449          ;; default
+ :builds [{:id "dev", 
+           :source-paths ["src"],
+           :figwheel {:on-jsload "cljs-flowgraph.core/init"}
+           :compiler
+           {:main "cljs-flowgraph.core"
+            :asset-path "js/out",
+            :optimizations :none
+            :preloads [devtools.preload]
+            :output-to "resources/public/js/cljs-flowgraph.js",
+            :output-dir "resources/public/js/out",
+            :source-map-timestamp true}}]}
