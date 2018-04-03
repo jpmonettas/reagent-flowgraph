@@ -1,4 +1,4 @@
-(ns cljs-flowgraph.core
+(ns reagent-flowgraph.core
   (:require [reagent.core :as r]
             [clj-tree-layout.core :refer [layout-tree] :as tl]
             [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
@@ -48,18 +48,15 @@
                              links (when (not-empty dimensions)
                                      (clog (for [n nodes-seq
                                             cn (:childs n)]
-                                        (let [[x y width height] (get dimensions (:node-id n))
-                                              [cx cy cwidth cheight] (get dimensions (:node-id cn))]
+                                             (let [{x :x y :y width :width height :height} (get dimensions (:node-id n))
+                                                   {cx :x cy :y cwidth :width cheight :height} (get dimensions (:node-id cn))]
                                           [(str (:node-id n) (:node-id cn))
                                            (+ x (/ width 2))
                                            (+ y height)
-                                           (+ cx (/ cwidth 2)) 
+                                           (+ cx (/ cwidth 2))
                                            cy]))
                                            :js))]
-                        [:div#panel {:style {:position :absolute
-                                             :top 150
-                                             :width layout-width
-                                             :height layout-height}}
+                         [:div#panel {:style {:position :relative}}
 
                          ;; Links
                          [:svg {:width layout-width
@@ -72,34 +69,5 @@
 
                          ;; Nodes
                          (for [n nodes-seq]
-                           (let [[x y _ _] (get dimensions (:node-id n))]
+                           (let [{:keys [x y]} (get dimensions (:node-id n))]
                              ^{:key (:node-id n)} [node (:node-id n) (:original-node n) x y render-fn]))]))})))
-
-(defonce app-state (r/atom '(+ 1 2 (- 4 2) (/ 123 3) (inc 25))))
-
-(defmulti render-node symbol?)
-
-(defmethod render-node true [n]
-  [:div {:style {:background-color :yellow
-                 :border "1px solid black"
-                 :padding "10px"
-                 :border-radius "10px"}} (str n)])
-
-(defmethod render-node :default [n]
-  [:div {:style {:border "1px solid black"
-                 :padding "10px"
-                 :border-radius "10px"}}
-   (str n)])
-
-(defn app []
-  [:div
-   [flowgraph @app-state
-    :layout-width 1500 
-    :layout-height 500
-    :branch-fn #(when (seq? %) %)
-    :childs-fn #(when (seq? %) %)
-    :render-fn render-node]])
-
-(defn init []
-  (r/render [app]
-            (.getElementById js/document "app"))) 

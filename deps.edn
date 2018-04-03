@@ -1,9 +1,9 @@
-{:deps {reagent {:mvn/version "0.8.0-alpha2"}}
+{:deps {reagent {:mvn/version "0.8.0-alpha2"}
+        clj-tree-layout {:mvn/version "0.1.0"}}
  :paths ["src" "resources" "test"]
  :aliases {:dev {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.238"}
                               org.clojure/clojure {:mvn/version "1.9.0"}
                               com.cemerick/piggieback {:mvn/version "0.2.2"}
                               figwheel-sidecar {:mvn/version "0.5.15"}
                               binaryage/devtools {:mvn/version "0.9.9"}
-                              philoskim/debux {:mvn/version "0.4.5"}
-                              clj-tree-layout {:local/root "/home/jmonetta/my-projects/clj-tree-layout"}}}}}
+                              philoskim/debux {:mvn/version "0.4.5"}}}}}
