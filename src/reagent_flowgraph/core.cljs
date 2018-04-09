@@ -9,7 +9,9 @@
         dom-width (.-offsetWidth dn)
         dom-height (.-offsetHeight dn)
         dom-sizes (reduce (fn [r n]
-                            (assoc r (.-id n) [(.-offsetWidth n) (.-offsetHeight n)]))
+                            (if (-> n .-dataset .-type (= "node"))
+                              (assoc r (.-id n) [(.-offsetWidth n) (.-offsetHeight n)])
+                              r))
                           {}
                           (array-seq (.-childNodes dn)))
         dimensions (layout-tree internal-nodes
@@ -25,6 +27,7 @@
 (defn node [id n x y render-fn]
   [:div
    {:id id
+    :data-type :node
     :style {:position :absolute
             :top y :left x}}
    (render-fn n)])
