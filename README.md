@@ -1,6 +1,7 @@
 # reagent-flowgraph
 
 A reagent component for laying out tree nodes in 2D space.
+If you are not using reagent but want to draw trees your own way check [clj-tree-layout](https://github.com/jpmonettas/clj-tree-layout).
 
 ## Features
 
@@ -125,3 +126,13 @@ as a parameter.
 #### :line-styles
 
 A map with styles for the svg lines that join nodes.
+
+## How does it works?
+
+The trick is in rendering all nodes twice. The action goes like this :
+
+- Traverse the tree rendering every node using :render-fn.
+- Collect the width and height of every node.
+- Now we have node sizes we use a library like [clj-tree-layout](https://github.com/jpmonettas/clj-tree-layout) to calculate nodes positions.
+- With positions we can calculate edges.
+- Render everything again.
