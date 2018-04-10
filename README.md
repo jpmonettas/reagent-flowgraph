@@ -1,4 +1,4 @@
-# reagent-flowchart
+# reagent-flowgraph
 
 A reagent component for laying out tree nodes in 2D space.
 
@@ -10,6 +10,8 @@ aesthetics rules.
 
 ## Installation
 
+[![Clojars Project](https://img.shields.io/clojars/v/reagent-flowgraph.svg)](https://clojars.org/reagent-flowgraph)
+
 ## Usage
 
 ```clojure
@@ -17,42 +19,88 @@ aesthetics rules.
   (:require [reagent.core :as r]
             [reagent-flowgraph.core :refer [flowgraph]]))
 
-
 (defonce app-state (r/atom '(+ 1 2 (- 4 2) (/ 123 3) (inc 25))))
-
-(defmulti render-node symbol?)
-
-(defmethod render-node true [n]
-  [:div {:style {:background-color :yellow
-                 :border "1px solid black"
-                 :padding "10px"
-                 :border-radius "10px"}
-         :on-click #(.log js/console n " clicked!")}
-   (str n)])
-
-(defmethod render-node :default [n]
-  [:div (str n)])
 
 (defn app []
   [:div
-   [:h3 "Reagent tree layout component test"]
    [flowgraph @app-state
-    :layout-width 1500 
+    :layout-width 1500
     :layout-height 500
     :branch-fn #(when (seq? %) %)
     :childs-fn #(when (seq? %) %)
-    :render-fn render-node]])
+    :render-fn (fn [n] [:div {:style {:border "1px solid black"
+                                      :padding "10px"
+                                      :border-radius "10px"}}
+                        (str n)] )]])
 
-(r/render [app] (.getElementById js/document "app")) 
+(defn init []
+  (r/render [app] (.getElementById js/document "app")))
 ```
 
-and that will render 
+and that will render
 
-<img src="/doc/images/reagent-tree.png?raw=true"/>
+<img src="/doc/images/reagent-tree-example-simple.png?raw=true"/>
+
+A more colorful example. Supouse we want to draw some aspects of the clojurescript compiler analisis tree.
+
+```clojure
+(ns tester.core
+  (:require [reagent.core :as r]
+            [reagent-flowgraph.core :refer [flowgraph]]
+            [cljs.js :as j]))
+
+(defonce app-state (r/atom {}))
+
+(defmulti render-node :op)
+
+(def styles {:border "1px solid #586e75" :padding "10px" :border-radius "10px"
+             :background-color "#002b36" :color "#B58900"})
+(defmethod render-node :fn [n]
+  [:div {:style (merge styles {:color "#DC322F"})}
+    [:b (str "(" (:name (:name n)) " ...)")]])
+
+(defmethod render-node :if [{:keys [then test else]}]
+  [:div {:style (merge styles {:color "#CB4B16"})}
+   [:div {:style {:text-align :center}} [:b "IF"]]
+   [:div {:style {:display :flex}}
+    [:div.if-test [:b "test"] [:div (str "'" (:form test) "'")]]
+    [:div.if-then [:b "then"] [:div (str "'" (:form then) "'")]]
+    [:div.if-else [:b "else"] [:div (str "'" (:form else) "'")]]]])
+
+(defmethod render-node :default [n]
+  [:div {:style styles} (str ":op " (:op n))])
+
+(defn app []
+  [:div {:style {:background-color "#002b36"}}
+   [flowgraph @app-state
+    :layout-width 500
+    :layout-height 1500
+    :branch-fn :children
+    :childs-fn :children
+    :render-fn render-node
+    :line-styles {:stroke-width 2
+                  :stroke "#CB4B16"}]])
+
+
+
+(defn init []
+  (r/render [app] (.getElementById js/document "app"))
+
+  (j/analyze-str (j/empty-state)
+                 "(defn factorial [n]
+                     (if (zero? n)
+                        1
+                        (* n (factorial (dec n)))))"
+                 #(reset! app-state (:value %))))
+```
+
+which will render
+
+<img src="/doc/images/reagent-tree-example-custom.png?raw=true"/>
 
 ## Options
 
-#### :layout-width 
+#### :layout-width
 
 An integer representing the width of the layout panel.
 
@@ -70,7 +118,11 @@ children, even if it currently doesn't.
 Is a fn that, given a branch node, returns a seq of its
 children.
 
-#### :render-fn render-node
+#### :render-fn
 
-A one parameter fn that can be used as a reagent component. Will receive the full node 
+A one parameter fn that can be used as a reagent component. Will receive the full node
 as a parameter.
+
+#### :line-styles
+
+A map with styles for the svg lines that join nodes.
