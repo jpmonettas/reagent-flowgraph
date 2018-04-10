@@ -30,10 +30,25 @@
       </resource>
     </resources>
   </build>
+
+  <distributionManagement>
+    <repository>
+      <id>clojars</id>
+      <name>Clojars repository</name>
+      <url>https://clojars.org/repo</url>
+    </repository>
+  </distributionManagement>
+
   <repositories>
     <repository>
       <id>clojars</id>
       <url>https://clojars.org/repo</url>
     </repository>
   </repositories>
+
+  <description>A reagent component for laying out tree nodes in 2D space.</description>
+  <url>https://github.com/jpmonettas/reagent-flowgraph</url>
+  <scm>
+    <url>https://github.com/jpmonettas/reagent-flowgraph</url>
+  </scm>
 </project>

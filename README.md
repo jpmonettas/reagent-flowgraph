@@ -55,6 +55,7 @@ A more colorful example. Supouse we want to draw some aspects of the clojurescri
 
 (def styles {:border "1px solid #586e75" :padding "10px" :border-radius "10px"
              :background-color "#002b36" :color "#B58900"})
+
 (defmethod render-node :fn [n]
   [:div {:style (merge styles {:color "#DC322F"})}
     [:b (str "(" (:name (:name n)) " ...)")]])
@@ -80,8 +81,6 @@ A more colorful example. Supouse we want to draw some aspects of the clojurescri
     :render-fn render-node
     :line-styles {:stroke-width 2
                   :stroke "#CB4B16"}]])
-
-
 
 (defn init []
   (r/render [app] (.getElementById js/document "app"))
