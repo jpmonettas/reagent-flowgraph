@@ -41,7 +41,7 @@ and that will render
 
 <img src="/doc/images/reagent-tree-example-simple.png?raw=true"/>
 
-A more colorful example. Supouse we want to draw some aspects of the clojurescript compiler analisis tree.
+A more colorful example. Supouse we want to draw some aspects of the clojurescript analyzer output tree.
 
 ```clojure
 (ns tester.core
