@@ -1,7 +1,6 @@
 (ns reagent-flowgraph.core
   (:require [reagent.core :as r]
-            [clj-tree-layout.core :refer [layout-tree] :as tl]
-            [debux.cs.core :as d :refer-macros [clog clogn dbg dbgn break]]))
+            [clj-tree-layout.core :refer [layout-tree] :as tl]))
 
 (defn merge-dimensions [t dimensions]
   (-> t
